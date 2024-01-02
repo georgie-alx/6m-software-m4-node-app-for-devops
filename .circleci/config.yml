@@ -2,3 +2,17 @@ version: 2.1
 
 orbs:
   node: circleci/node@5.0.1
+
+jobs:
+  build: #name of the job
+    docker: #powered by docker
+      - image: cimg/node:16.10 #pulling down image of node 16.10
+    steps: #steps of this job (a list defined by '-')
+      - checkout #pull down source code from github
+      - node/install-packages:
+          pkg-manager: npm
+      - run: |
+          echo "Installing dependencies..."
+          npm install
+  # test:
+  # optional_publish:
