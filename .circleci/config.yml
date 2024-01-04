@@ -25,7 +25,20 @@ jobs:
           echo "Running tests..."
           npm run test
   optional_publish:
-  # assignment
+    #assignment
+  deploy:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - setup_remote_docker
+      - checkout
+      - heroku/install
+      - run:
+          name: Heroku Container Push
+          command: |
+            heroku container:login
+            heroku container:push web -a devopsproj
+            heroku container:release web -a devopsproj
 
 workflows:
   simple_workflow:
