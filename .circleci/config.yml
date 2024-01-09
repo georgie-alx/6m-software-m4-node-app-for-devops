@@ -1,4 +1,4 @@
-version: 2.1 
+version: 2.1
 
 orbs:
   node: circleci/node@5.0.1
@@ -85,7 +85,7 @@ workflows:
   simple_workflow:
     jobs:
       - build
-          filter:
+        # filter:
       - test:
           requires:
             - build
