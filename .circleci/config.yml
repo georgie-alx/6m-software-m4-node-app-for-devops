@@ -1,4 +1,4 @@
-version: 2.1
+version: 2.1 
 
 orbs:
   node: circleci/node@5.0.1
@@ -26,6 +26,18 @@ jobs:
       - run: |
           echo "Running tests..."
           npm run test
+  scan:
+    docker:
+      - image: cimg/node:16.10
+    environment:
+      IMAGE_NAME: amidewing/education-space
+    steps:
+      - checkout
+      - setup_remote_docker
+      - docker/check
+      - run: docker build -t $IMAGE_NAME .
+      - snyk/scan:
+          docker-image-name: $IMAGE_NAME
   publish:
     executor: docker/docker
     steps:
@@ -73,9 +85,13 @@ workflows:
   simple_workflow:
     jobs:
       - build
+          filter:
       - test:
           requires:
             - build
+      - scan:
+          requires:
+            - test
       - publish:
           requires:
             - test
@@ -85,3 +101,11 @@ workflows:
       - pull-and-deploy:
           requires:
             - publish
+# workflows:
+#   build-deploy:
+#     jobs:
+#       - js_build
+#       - build_server_pdf # job to conditionally run based on filter on branch name
+#           filters:
+#             branches:
+#               only: /server\/.*/
