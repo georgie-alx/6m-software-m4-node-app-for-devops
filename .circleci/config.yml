@@ -86,22 +86,52 @@ workflows:
   simple_workflow:
     jobs:
       - build
-        # filter:
+          filters:
+            branches:
+              only: 
+                - main
+                - release
       - test:
           requires:
             - build
+              filters:
+                branches:
+                  only: 
+                    - main
+                    - release
       - scan:
           requires:
             - test
+          filters:
+            branches:
+              only:
+                 - release
       - publish:
           requires:
             - test
+          filters:
+            branches:
+              only:
+                 - release
       # - deploy:
       #     requires:
       #       - publish
       - pull-and-deploy:
           requires:
             - publish
+          filters:
+            branches:
+              only:
+                 - release
+  
+  release_workflow:
+    jobs:
+      - publish:
+          filters:
+            branches:
+              only:
+                 - release
+  
 # workflows:
 #   build-deploy:
 #     jobs:
